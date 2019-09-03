@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <input id="msg" type="text" />
+    <button onclick="sendMessage();">send</button>
+    <script src="./socket.io.js"></script>
+    <script>
+      var socket = io();
+      socket.on("data", function(data) {
+        document.querySelector("#app").innerHTML = JSON.stringify(data);
+      });
+      function sendMessage() {
+        let msg = document.querySelector("#msg").value;
+        socket.emit("message", msg);
+      }
+    </script>
+  </body>
+</html>
