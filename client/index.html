@@ -8,17 +8,36 @@
   </head>
   <body>
     <div id="app"></div>
-    <input id="msg" type="text" />
+    <input id="msg-topic" type="text" />
+    <input id="msg-payload" type="text" />
     <button onclick="sendMessage();">send</button>
+    <div style="display: block;">
+      <label for="esp-led1">ESP-LED1</label
+      ><button id="esp-led1" onclick="toggleLed1();"></button>
+    </div>
     <script src="./socket.io.js"></script>
     <script>
       var socket = io();
-      socket.on("data", function(data) {
+      var state = {
+        appName: "ihome",
+        esp: { connected: false, state: { led1: 0 } }
+      };
+
+      document.querySelector("#esp-led1").innerHTML = state.esp.state.led1;
+
+      socket.on("state", function(data) {
+        state = data;
         document.querySelector("#app").innerHTML = JSON.stringify(data);
+        document.querySelector("#esp-led1").innerHTML = state.esp.state.led1;
       });
       function sendMessage() {
-        let msg = document.querySelector("#msg").value;
-        socket.emit("message", msg);
+        let topic = document.querySelector("#msg-topic").value;
+        let payload = document.querySelector("#msg-payload").value;
+        socket.emit(topic, payload);
+      }
+      function toggleLed1() {
+        if (state.esp.state.led1 === 0) socket.emit("esp/led1on", {});
+        else if (state.esp.state.led1 === 1) socket.emit("esp/led1off", {});
       }
     </script>
   </body>

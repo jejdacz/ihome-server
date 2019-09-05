@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <label for="msg-topic">topic:</label
+    ><input id="msg-topic" type="text" value="espruino/test" />
+    <label for="msg">message:</label
+    ><input id="msg" type="text" value="message text" />
+    <button onclick="sendMessage();">send</button>
+    <script src="paho-mqtt-min.js"></script>
+    <script>
+      var mqtt;
+      var reconnectTimeout = 1000;
+      var host = "10.0.0.200";
+      var port = 8888;
+
+      function onConnect() {
+        console.log("socket ready");
+        mqtt.subscribe("espruino/test");
+        let msg = new Paho.MQTT.Message("Hello");
+        msg.destinationName = "espruino/test";
+        mqtt.send(msg);
+      }
+
+      function onMessageArrived(msg) {
+        console.log(msg.payloadString);
+      }
+
+      function onFailure(msg) {
+        console.warn("connection failed");
+        setTimeout(MQTTconnect, reconnectTimeout);
+      }
+
+      function MQTTconnect() {
+        console.log("connecting");
+        mqtt = new Paho.MQTT.Client(host, port, "clientjs");
+        let options = {
+          timeout: 3,
+          onSuccess: onConnect,
+          onFailure: onFailure
+        };
+        mqtt.onMessageArrived = onMessageArrived;
+        mqtt.connect(options);
+      }
+
+      function sendMessage() {
+        let msg = new Paho.MQTT.Message(document.querySelector("#msg").value);
+        msg.destinationName = document.querySelector("#msg-topic").value;
+        mqtt.send(msg);
+      }
+      MQTTconnect();
+    </script>
+  </body>
+</html>
