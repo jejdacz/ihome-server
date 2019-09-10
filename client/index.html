@@ -11,19 +11,20 @@
     <input id="msg-topic" type="text" />
     <input id="msg-payload" type="text" />
     <button onclick="sendMessage();">send</button>
-    <div style="display: block;">
-      <label for="esp-led1">ESP-LED1</label
-      ><button id="esp-led1" onclick="toggleLed1();"></button>
+    <div
+      style="display: flex;flex-flow:row;justify-items:center;margin:10%;height:5rem;"
+    >
+      <label style="flex-grow:1;" for="esp-led1">ESP-LED1</label
+      ><button
+        style="flex-grow:1;"
+        id="esp-led1"
+        onclick="toggleLed1();"
+      ></button>
     </div>
     <script src="./socket.io.js"></script>
     <script>
       var socket = io();
-      var state = {
-        appName: "ihome",
-        esp: { connected: false, state: { led1: 0 } }
-      };
-
-      document.querySelector("#esp-led1").innerHTML = state.esp.state.led1;
+      var state = {};
 
       socket.on("state", function(data) {
         state = data;

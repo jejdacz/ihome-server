@@ -4,8 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
-    "broker": "nodemon broker.js"
+    "start": "npm run broker & npm run server",
+    "server": "node index.js",
+    "server-dev": "nodemon index.js",
+    "broker": "node broker.js",
+    "broker-dev": "nodemon broker.js"
   },
   "keywords": [],
   "author": "",

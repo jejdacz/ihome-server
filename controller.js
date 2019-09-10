@@ -1,5 +1,6 @@
 const initialState = {
-  appName: "ihome"
+  appName: "ihome",
+  esp: { connected: false, state: {} }
 };
 
 const reducer = (state = initialState, action) => {
@@ -8,6 +9,11 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         esp: { ...state.esp, connected: true, state: action.payload }
+      };
+    case "esp/disconnected":
+      return {
+        ...state,
+        esp: { ...state.esp, connected: false }
       };
     case "esp/state":
       return {
@@ -28,9 +34,11 @@ module.exports = io => {
   client.on("connect", () => {
     console.log("controller connected to broker");
     client.subscribe("esp/connected");
+    client.subscribe("esp/disconnected");
     client.subscribe("esp/state");
   });
 
+  // TODO: handle esp disconnect
   client.on("message", (topic, message) => {
     store.dispatch({ type: topic, payload: JSON.parse(message.toString()) });
   });
@@ -40,7 +48,16 @@ module.exports = io => {
     store.subscribe(() => io.emit("state", store.getState()));
     store.dispatch({});
 
-    socket.on("esp/led1on", msg => client.publish("esp/led1on"));
-    socket.on("esp/led1off", msg => client.publish("esp/led1off"));
+    const isEspConnected = () => store.getState().esp.connected;
+    socket.on("esp/led1on", msg =>
+      isEspConnected()
+        ? client.publish("esp/led1on")
+        : console.log("esp disconnected")
+    );
+    socket.on("esp/led1off", msg =>
+      isEspConnected()
+        ? client.publish("esp/led1off")
+        : console.log("esp disconnected")
+    );
   });
 };

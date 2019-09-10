@@ -9,10 +9,6 @@ const io = require("socket.io")(http);
 require("./controller")(io);
 
 app.use(express.static(path.resolve("client")));
-/*
-app.get("/", function(req, res) {
-  res.sendFile(path.resolve("client/index.html"));
-});*/
 
 app.use((err, request, response, next) => {
   if (err) {
