@@ -23,7 +23,7 @@ httpServer.listen(wsPort, function() {
 });
 
 aedes.on("publish", function(packet, client) {
-  //console.log(packet);
+  //console.log(client);
   if (client) {
     console.log(
       "********************",
@@ -37,12 +37,4 @@ aedes.on("publish", function(packet, client) {
       packet.topic.length + Buffer.byteLength(packet.payload)
     );
   }
-});
-
-aedes.on("keepaliveTimeout", function() {
-  console.log("keep alive timeout");
-});
-
-aedes.on("client", function(client) {
-  //console.log("new client", client);
 });

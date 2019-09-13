@@ -2,16 +2,16 @@
   "name": "ihome-server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "",
   "scripts": {
     "start": "npm run broker & npm run server",
-    "server": "node index.js",
-    "server-dev": "nodemon index.js",
-    "broker": "node broker.js",
+    "server": "node server.js 2> server.log",
+    "server-dev": "nodemon server.js",
+    "broker": "node broker.js 2> broker.log",
     "broker-dev": "nodemon broker.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Marek Mego",
   "license": "ISC",
   "dependencies": {
     "aedes": "^0.39.0",

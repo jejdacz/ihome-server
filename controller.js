@@ -1,6 +1,6 @@
 const initialState = {
   appName: "ihome",
-  esp: { connected: false, state: {} }
+  esp: { connected: false }
 };
 
 const reducer = (state = initialState, action) => {
@@ -8,7 +8,7 @@ const reducer = (state = initialState, action) => {
     case "esp/connected":
       return {
         ...state,
-        esp: { ...state.esp, connected: true, state: action.payload }
+        esp: { ...state.esp, connected: true, ...action.payload }
       };
     case "esp/disconnected":
       return {
@@ -18,7 +18,7 @@ const reducer = (state = initialState, action) => {
     case "esp/state":
       return {
         ...state,
-        esp: { ...state.esp, state: action.payload }
+        esp: { ...state.esp, ...action.payload }
       };
     default:
       return state;
@@ -26,6 +26,9 @@ const reducer = (state = initialState, action) => {
 };
 
 const store = require("./store")(reducer);
+
+const esp = {};
+esp.isConnected = () => store.getState().esp.connected;
 
 module.exports = io => {
   const mqtt = require("mqtt");
@@ -38,26 +41,31 @@ module.exports = io => {
     client.subscribe("esp/state");
   });
 
-  // TODO: handle esp disconnect
   client.on("message", (topic, message) => {
-    store.dispatch({ type: topic, payload: JSON.parse(message.toString()) });
+    let msg;
+    try {
+      msg = JSON.parse(message.toString());
+    } catch (e) {
+      console.error("message payload is not JSON");
+      msg = {};
+    }
+
+    console.log(topic, msg);
+    store.dispatch({ type: topic, payload: msg });
   });
 
   io.on("connection", function(socket) {
     console.log("a user connected");
-    store.subscribe(() => io.emit("state", store.getState()));
+    store.subscribe(() => io.emit("stateUpdated", store.getState()));
     store.dispatch({});
 
-    const isEspConnected = () => store.getState().esp.connected;
-    socket.on("esp/led1on", msg =>
-      isEspConnected()
-        ? client.publish("esp/led1on")
-        : console.log("esp disconnected")
+    socket.on(
+      "esp/led1on",
+      msg => esp.isConnected() && client.publish("esp/led1on")
     );
-    socket.on("esp/led1off", msg =>
-      isEspConnected()
-        ? client.publish("esp/led1off")
-        : console.log("esp disconnected")
+    socket.on(
+      "esp/led1off",
+      msg => esp.isConnected() && client.publish("esp/led1off")
     );
   });
 };

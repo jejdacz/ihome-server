@@ -26,10 +26,10 @@
       var socket = io();
       var state = {};
 
-      socket.on("state", function(data) {
+      socket.on("stateUpdated", function(data) {
         state = data;
         document.querySelector("#app").innerHTML = JSON.stringify(data);
-        document.querySelector("#esp-led1").innerHTML = state.esp.state.led1;
+        document.querySelector("#esp-led1").innerHTML = state.esp.led1;
       });
       function sendMessage() {
         let topic = document.querySelector("#msg-topic").value;
@@ -37,8 +37,8 @@
         socket.emit(topic, payload);
       }
       function toggleLed1() {
-        if (state.esp.state.led1 === 0) socket.emit("esp/led1on", {});
-        else if (state.esp.state.led1 === 1) socket.emit("esp/led1off", {});
+        if (state.esp.led1 === 0) socket.emit("esp/led1on", {});
+        else if (state.esp.led1 === 1) socket.emit("esp/led1off", {});
       }
     </script>
   </body>
