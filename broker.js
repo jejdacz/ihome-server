@@ -1,6 +1,7 @@
 var aedes = require("aedes")();
 var server = require("net").createServer(aedes.handle);
 var port = 1883;
+var moment = require("moment");
 
 server.listen(port, function() {
   console.log("server listening on port", port);
@@ -24,9 +25,12 @@ httpServer.listen(wsPort, function() {
 
 aedes.on("publish", function(packet, client) {
   //console.log(client);
+
   if (client) {
     console.log(
       "********************",
+      "\n*",      
+      moment().format('dddd, H:mm:ss'),
       "\n* message from:",
       client.id,
       "\n* message topic:",
