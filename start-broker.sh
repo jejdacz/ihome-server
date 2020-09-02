@@ -1,2 +1,3 @@
 #!/bin/bash 
-npm run broker
+cd /home/pi/ihome-server
+npm run broker &
