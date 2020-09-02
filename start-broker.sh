@@ -1,2 +1,2 @@
 #!/bin/bash 
-npm run broker &
+npm run broker
