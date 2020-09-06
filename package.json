@@ -8,6 +8,7 @@
     "server": "node server.js 2> server.log",
     "server-dev": "nodemon server.js",
     "broker": "node broker.js 2> broker.log",
+    "broker-log": "node broker.js 2> broker-err.log 1> broker.log",
     "broker-dev": "nodemon broker.js"
   },
   "keywords": [],
