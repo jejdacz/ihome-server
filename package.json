@@ -15,7 +15,7 @@
   "author": "Marek Mego",
   "license": "ISC",
   "dependencies": {
-    "aedes": "^0.39.0",
+    "aedes": "^0.42.1",
     "express": "^4.17.1",
     "moment": "^2.27.0",
     "mqtt": "^3.0.0",
